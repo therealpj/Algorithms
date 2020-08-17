@@ -159,7 +159,7 @@ public class Deque<Item> implements Iterable<Item> {
             throw new UnsupportedOperationException("remove operation not supported");
         }
     }
-    
+
     public static void main(String[] args) {
 
         Deque<Integer> deque = new Deque<>();

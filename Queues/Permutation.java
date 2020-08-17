@@ -8,31 +8,38 @@
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-
-import java.util.Iterator;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Permutation {
     public static void main(String[] args) {
         RandomizedQueue<String> randomizedQueue = new RandomizedQueue<>();
+        int n = Integer.parseInt(args[0]);
 
-        // read a sequence of strings
-        /* while (true) {
-            String line = StdIn.readLine();
-            if (line.length() == 0) {
-                break;
-            }
-            randomizedQueue.enqueue(line);
-        } */
-
+        // Reservoir Sampling
+        int stringNumber = 1;
         while (!StdIn.isEmpty()) {
-            randomizedQueue.enqueue(StdIn.readString());
+
+            // if n items are enqueued, randomly replace them with the next incoming items with a probability
+            if (stringNumber <= n) {
+                randomizedQueue.enqueue(StdIn.readString());
+            }
+            else {
+                int randomNumber = StdRandom.uniform(0, stringNumber);
+                if (randomNumber <= n - 1) {
+                    randomizedQueue.dequeue();
+                    randomizedQueue.enqueue(StdIn.readString());
+                }
+                else {
+                    StdIn.readString();
+                }
+            }
+            stringNumber++;
         }
 
-        // Print the sequence of strings randomly
-        int n = Integer.parseInt(args[0]);
-        Iterator<String> iterator = randomizedQueue.iterator();
-        for (int i = 0; i < n; i++) {
-            StdOut.println(iterator.next());
+        for (String i : randomizedQueue) {
+            StdOut.println(i);
         }
     }
+
 }
+

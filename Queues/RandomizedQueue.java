@@ -15,12 +15,11 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Item[] queue;
-    private int tail, size;
+    private int size;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
         queue = (Item[]) new Object[5];
-        tail = -1;
         size = 0;
     }
 
@@ -32,7 +31,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         queue = copy;
-        copy = null;
     }
 
     // is the randomized queue empty?
@@ -56,8 +54,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             resize(2 * size);
         }
 
-        size++;
-        queue[++tail] = item;
+        queue[size++] = item;
     }
 
     // remove and return a random item
@@ -69,9 +66,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int randomIndex = StdRandom.uniform(0, size);
         // replacing the deleted item with last item of our queue
         Item deletedItem = queue[randomIndex];
-        queue[randomIndex] = queue[tail];
-        queue[tail] = null;
-        tail--;
+        queue[randomIndex] = queue[size - 1];
+        queue[size - 1] = null;
         size--;
 
         // resizing queue if it becomes sufficiently empty
@@ -99,13 +95,22 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private class RandomizedQueueIterator implements Iterator<Item> {
 
+        private Item[] queueClone;
+        private int tailClone;
+
         public RandomizedQueueIterator() {
-            StdRandom.shuffle(queue);
-            int start = 0;
+            queueClone = (Item[]) new Object[size];
+            for (int i = 0; i < size; i++) {
+                queueClone[i] = queue[i];
+            }
+            tailClone = size - 1;
         }
 
         public boolean hasNext() {
-            return size == 0;
+            if (tailClone == -1) {
+                return false;
+            }
+            return true;
         }
 
         public Item next() {
